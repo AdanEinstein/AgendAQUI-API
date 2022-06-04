@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "/cliente")
+@RequestMapping("/api/cliente")
 public class ClienteController {
     private final ClienteRepository clienteRepository;
     private final LoginRepository loginRepository;

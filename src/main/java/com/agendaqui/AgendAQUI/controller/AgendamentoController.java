@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "/agendamento")
+@RequestMapping("/api/agendamento")
 public class AgendamentoController {
     private final AgendamentoRepository agendamentoRepository;
     private final ClienteRepository clienteRepository;
@@ -29,7 +29,7 @@ public class AgendamentoController {
     }
 
     @GetMapping("/listarTodos")
-    public ResponseEntity<List<Agendamento>> listarClientes() {
+    public ResponseEntity<List<Agendamento>> listarAgendamentos() {
         try {
             return ResponseEntity.ok(agendamentoRepository.findAll());
         } catch (Exception e) {

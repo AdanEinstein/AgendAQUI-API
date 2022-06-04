@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "/login")
+@RequestMapping("/api/login")
 public class LoginController {
 
     private final LoginRepository loginRepository;

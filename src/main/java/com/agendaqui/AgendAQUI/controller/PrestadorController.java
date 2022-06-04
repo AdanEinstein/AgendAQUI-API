@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "/prestador")
+@RequestMapping("/api/prestador")
 public class PrestadorController {
     private final PrestadorRepository prestadorRepository;
     private final LoginRepository loginRepository;
@@ -24,7 +24,7 @@ public class PrestadorController {
     }
 
     @GetMapping("/listarTodos") // Rota que retorna todos os prestadores de serviços cadastrados na base de dados
-    public ResponseEntity<List<PrestadorServico>> listarClientes() {
+    public ResponseEntity<List<PrestadorServico>> listarPrestadores() {
         try {
             return ResponseEntity.ok(prestadorRepository.findAll());
         } catch (Exception e) {

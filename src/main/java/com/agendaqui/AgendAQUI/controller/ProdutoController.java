@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 @RestController
-@RequestMapping(path = "/produtos")
+@RequestMapping("/api/produtos")
 public class ProdutoController {
     private final ProdutoRepository produtoRepository;
     private final PrestadorRepository prestadorRepository;
