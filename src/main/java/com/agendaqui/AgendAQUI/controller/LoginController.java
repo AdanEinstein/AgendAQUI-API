@@ -79,7 +79,7 @@ public class LoginController {
     // Rota responsável por retornar as informações necessárias do usuário
     // Caso seja cliente -> Retorna Cliente
     // Caso seja Prestador || Cliente && Prestador -> Retorna Prestador
-    // Caso não seja nenhum -> Retorna um {} (objeto vazio)
+    // Caso não seja nenhum -> Retorna um Login
     public ResponseEntity<Object> getLoginDetails(@RequestParam String login, @RequestParam String senha) {
         try {
             Optional<Login> optUsuario = loginRepository.findByLogin(login);
@@ -93,7 +93,7 @@ public class LoginController {
                 Optional<Cliente> cliente = clienteRepository.getByLogin_Id(usuario.getId());
                 Optional<PrestadorServico> prestador = prestadorRepository.getByLogin_Id(usuario.getId());
                 if (cliente.isEmpty() && prestador.isEmpty()) {
-                    return ResponseEntity.ok().body(new Object());
+                    return ResponseEntity.ok().body(usuario);
                 } else if (cliente.isEmpty()) {
                     return ResponseEntity.ok(prestador.get());
                 } else if (prestador.isEmpty()) {
@@ -146,7 +146,7 @@ public class LoginController {
                     Login login = new Login(idJson, loginJson, encoder.encode(passwordJson));
                     return ResponseEntity.ok().body(loginRepository.save(login));
                 } else {
-                    return ResponseEntity.ok().body("Senhas não correspondentes!");
+                    return ResponseEntity.badRequest().body("Senha antiga não correspondente!");
                 }
             }
         } catch (DataAccessException sql){

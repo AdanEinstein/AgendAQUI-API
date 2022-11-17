@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 @Data
 @NoArgsConstructor
@@ -19,12 +18,12 @@ public class Agendamento implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Cliente cliente;
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private PrestadorServico prestador;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm", timezone = "GMT-3")
-    private Timestamp dataEHora;
-    private Boolean aprovado;
-    private Integer estrelas;
+    private String dataEHora;
+    private String produtosAgendados;
+    private Integer status;
 }

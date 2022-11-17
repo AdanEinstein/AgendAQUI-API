@@ -3,14 +3,17 @@ package com.agendaqui.AgendAQUI.controller;
 import com.agendaqui.AgendAQUI.model.Cliente;
 import com.agendaqui.AgendAQUI.model.Login;
 import com.agendaqui.AgendAQUI.model.PrestadorServico;
+import com.agendaqui.AgendAQUI.model.Produto;
 import com.agendaqui.AgendAQUI.repository.LoginRepository;
 import com.agendaqui.AgendAQUI.repository.PrestadorRepository;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 @RestController
 @RequestMapping("/api/prestador")
@@ -24,9 +27,30 @@ public class PrestadorController {
     }
 
     @GetMapping("/listarTodos") // Rota que retorna todos os prestadores de serviços cadastrados na base de dados
-    public ResponseEntity<List<PrestadorServico>> listarPrestadores() {
+    public ResponseEntity<List<PrestadorServico>> listarPrestadores(@RequestParam Integer page) {
         try {
-            return ResponseEntity.ok(prestadorRepository.findAll());
+            return ResponseEntity.ok(prestadorRepository.findAll(Pageable.ofSize(10).withPage(page)).getContent());
+        } catch (Exception e) {
+            ResponseEntity.badRequest().body("Requisição com parâmetros errados!\n" + e.getMessage());
+            return null;
+        }
+    }
+
+    @GetMapping("/buscarPorNome") // Rota que retorna todos os prestadores de serviços cadastrados na base de dados
+    public ResponseEntity<List<PrestadorServico>> listarPrestadoresPorNome(@RequestParam String nome, @RequestParam(required = false) Integer page) {
+        try {
+            Predicate<PrestadorServico> filtrarPorNome = prestadorServico -> {
+                if (prestadorServico.getNome().toLowerCase().contains(nome.toLowerCase())) {
+                    return true;
+                } else {
+                    return false;
+                }
+            };
+            if (page == null) {
+                return ResponseEntity.ok(prestadorRepository.findAll(Pageable.ofSize(10)).stream().filter(filtrarPorNome).toList());
+            } else {
+                return ResponseEntity.ok(prestadorRepository.findAll(Pageable.ofSize(10).withPage(page)).stream().filter(filtrarPorNome).toList());
+            }
         } catch (Exception e) {
             ResponseEntity.badRequest().body("Requisição com parâmetros errados!\n" + e.getMessage());
             return null;
@@ -55,6 +79,7 @@ public class PrestadorController {
     //    "cpfj": "<CPF / CNPJ>",
     //    "telefone": "<telefone>",
     //    "descricao": "<descrição>",
+    //    "categoria": "<categoria>",
     //    "email": "<e-mail>",
     //    "paginaFacebook": "<Página Facebook>",
     //    "loginid": <id>
@@ -65,6 +90,7 @@ public class PrestadorController {
             String cpfjJson = json.get("cpfj").asText();
             String telefoneJson = json.get("telefone").asText();
             String descricaoJson = json.get("descricao").asText();
+            String categoriaJson = json.get("categoria").asText();
             String emailJson = json.get("email").asText();
             String paginaFacebookJson = json.get("paginaFacebook").asText();
             Long loginidJson = json.get("loginid").asLong();
@@ -81,6 +107,7 @@ public class PrestadorController {
                     prestadorServico.setCpfj(cpfjJson);
                     prestadorServico.setTelefone(telefoneJson);
                     prestadorServico.setDescricao(descricaoJson);
+                    prestadorServico.setCategoria(categoriaJson);
                     prestadorServico.setEmail(emailJson);
                     prestadorServico.setPaginaFacebook(paginaFacebookJson);
                     prestadorServico.setLogin(login.get());
@@ -100,6 +127,7 @@ public class PrestadorController {
     //    "cpfj": "<CPF / CNPJ>",
     //    "telefone": "<telefone>",
     //    "descricao": "<descrição>",
+    //    "categoria": "<categoria>",
     //    "email": "<e-mail>",
     //    "paginaFacebook": "<Página Facebook>",
     //}"
@@ -110,6 +138,7 @@ public class PrestadorController {
             String cpfjJson = json.get("cpfj").asText();
             String telefoneJson = json.get("telefone").asText();
             String descricaoJson = json.get("descricao").asText();
+            String categoriaJson = json.get("categoria").asText();
             String emailJson = json.get("email").asText();
             String paginaFacebookJson = json.get("paginaFacebook").asText();
             Optional<PrestadorServico> prestadorRequisitado = prestadorRepository.findById(idJson);
@@ -121,6 +150,7 @@ public class PrestadorController {
                 prestadorServico.setCpfj(cpfjJson);
                 prestadorServico.setTelefone(telefoneJson);
                 prestadorServico.setDescricao(descricaoJson);
+                prestadorServico.setCategoria(categoriaJson);
                 prestadorServico.setEmail(emailJson);
                 prestadorServico.setPaginaFacebook(paginaFacebookJson);
                 return ResponseEntity.ok(prestadorRepository.save(prestadorServico));
@@ -137,6 +167,7 @@ public class PrestadorController {
             if (prestadorDeletado.isEmpty()) {
                 return ResponseEntity.badRequest().body("Prestador de serviço não existe!");
             }
+
             prestadorRepository.deleteById(prestadorid);
             return ResponseEntity.ok().body(prestadorDeletado.get());
 

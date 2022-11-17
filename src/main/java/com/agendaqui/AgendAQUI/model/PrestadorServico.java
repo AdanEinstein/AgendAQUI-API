@@ -22,10 +22,11 @@ public class PrestadorServico implements Serializable {
     private String cpfj;
     private String telefone;
     private String descricao;
+    private String categoria;
     private String email;
     private String paginaFacebook;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Login login;
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Produto>produtos;
 }

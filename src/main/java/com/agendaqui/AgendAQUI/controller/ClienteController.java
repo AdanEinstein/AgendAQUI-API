@@ -32,7 +32,7 @@ public class ClienteController {
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}") // Rota que retorna um um cliente pelo id
     public ResponseEntity<Object> buscarClientePorId(@PathVariable("id") Long id) {
         try {
             Optional<Cliente> cliente = clienteRepository.findById(id);

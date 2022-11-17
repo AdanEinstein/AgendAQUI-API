@@ -21,6 +21,6 @@ public class Produto implements Serializable {
     private String descricao;
     private Double preco;
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private PrestadorServico prestador;
 }
